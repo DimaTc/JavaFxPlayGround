@@ -74,4 +74,9 @@ public class RectCircle extends SmartEllipse {
     public void update() {
 
     }
+
+    @Override
+    public void addVelocity(double dx, double dy) {
+
+    }
 }

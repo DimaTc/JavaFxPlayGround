@@ -7,24 +7,21 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.Background;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import sample.Entites.RectCircle;
 import sample.Entites.Shapes;
-
-import java.util.ArrayList;
+import sample.Panes.CirclePanel;
+import sample.Panes.ShapePanel;
 
 
 public class Main extends Application {
 
     private static final double UPDATE_RATE = 60;
-    private ArrayList<RectCircle> items;
+
     private ShapePanel shapePanel;
+    private CirclePanel circlePanel;
 
     public static void main(String[] args) {
         launch(args);
@@ -32,7 +29,29 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        BorderPane mainPane = new BorderPane();
+        TabPane mainPane = new TabPane();
+        BorderPane shapesMainPane = initShapePane();
+        circlePanel = initCirclesPane();
+        mainPane.getTabs().add(new Tab("Test1", shapesMainPane));
+        mainPane.getTabs().add(new Tab("Circles2", circlePanel));
+        for (Tab tab : mainPane.getTabs())
+            tab.setClosable(false);
+        Scene scene = new Scene(mainPane, 800, 800);
+        primaryStage.setTitle("Dima's World");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        circlePanel.init();
+        startTimer();
+    }
+
+    private CirclePanel initCirclesPane() {
+        CirclePanel circlePanel = new CirclePanel();
+        circlePanel.setStyle("-fx-border-color:black; -fx-border-width:2px;-fx-background-color:#f5f5f5;");
+        return circlePanel;
+    }
+
+    private BorderPane initShapePane() {
+        BorderPane borderPane = new BorderPane();
         shapePanel = new ShapePanel();
         VBox buttonPane = new VBox();
         buttonPane.setAlignment(Pos.CENTER_LEFT);
@@ -49,17 +68,14 @@ public class Main extends Application {
         }
         ((RadioButton) buttonPane.getChildren().get(0)).fire();
 
-        mainPane.setCenter(shapePanel);
-        mainPane.setRight(buttonPane);
-        Scene scene = new Scene(mainPane, 800, 800);
-        primaryStage.setTitle("Dima's World");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        startTimer();
+        borderPane.setCenter(shapePanel);
+        borderPane.setRight(buttonPane);
+        return borderPane;
     }
 
     private void update() {
         shapePanel.update();
+        circlePanel.update();
     }
 
     private void startTimer() {

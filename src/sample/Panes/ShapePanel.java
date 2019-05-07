@@ -1,16 +1,15 @@
-package sample;
+package sample.Panes;
 
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import sample.Entites.BulletCircle;
 import sample.Entites.RectCircle;
 import sample.Entites.Shapes;
 import sample.Entites.SmartEllipse;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.HashMap;
 
-public class ShapePanel extends Pane {
+public class ShapePanel extends InteractivePane {
     private ArrayList<SmartEllipse> items;
     private Shapes currentShape;
 
@@ -45,6 +44,11 @@ public class ShapePanel extends Pane {
                 newItem = null;
         }
         return newItem;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     public void update() {

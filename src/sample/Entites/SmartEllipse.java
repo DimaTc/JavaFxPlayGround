@@ -37,4 +37,8 @@ public abstract class SmartEllipse extends Circle {
     public void setDy(double dy) {
         this.dy = dy;
     }
+
+    public abstract void addVelocity(double dx, double dy);
+
+
 }

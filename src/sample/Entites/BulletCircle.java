@@ -82,23 +82,32 @@ public class BulletCircle extends SmartEllipse {
 
     /**
      * Need to to give some mass and think of the way to calculate it correctly
+     *
      * @param shape
      */
     @Override
     public void manageCollision(SmartEllipse shape) {
+        shape.addVelocity(getDx() / 2, getDy() / 2);
+        setDx(getDx() / 2);
+        setDy(getDy() / 2);
         double speedSize = Math.sqrt(getDx() * getDx() + getDy() * getDy());
+        double totalRadius = shape.getRadius() + getRadius();
+        double relRadToVel = speedSize / totalRadius;
         double hitAngle;
-        if (shape.getCenterX() == getCenterX())
+        if (Math.abs(shape.getCenterX() - circle.getCenterX()) <= 0.0002)
             hitAngle = 0;
         else
-            hitAngle = Math.atan((shape.getCenterY() - getCenterY()) / (shape.getCenterX() - getCenterX()));
-        System.out.println(hitAngle);
-        setDx(speedSize * Math.sin(hitAngle));
-        setDy(speedSize * Math.cos(hitAngle));
-//
-//        setDy(-getDy());
-//        setDx(-getDx());
+            hitAngle = Math.atan((shape.getCenterY() - circle.getCenterY()) / (shape.getCenterX() - circle.getCenterX()));
+//        System.out.println(speedSize);
+        setDx(relRadToVel * totalRadius * Math.sin(hitAngle));
+        setDy(relRadToVel * totalRadius * Math.cos(hitAngle));
+//        System.out.println(getDx());
+    }
 
+    @Override
+    public void addVelocity(double dx, double dy) {
+        setDx(getDx() + dx);
+        setDy(getDy() + dy);
     }
 
     @Override
@@ -114,10 +123,20 @@ public class BulletCircle extends SmartEllipse {
         double cTop = circle.getCenterY() - circle.getRadius();
         double cBottom = circle.getCenterY() + circle.getRadius();
         //Simple to change speed without control (very buggy and should not stay)
-        if (cRight >= w || cLeft <= 0)
-            setDx(-getDx());
-        else if (cBottom >= h || cTop <= 0)
-            setDy(-getDy());
+        if (cRight >= w && getDx() > 0) {
+            setDx(-Math.abs(getDx()));
+            setCenterX(w - circle.getRadius() - 1);
+        } else if (cLeft <= 0 && getDx() < 0) {
+            setDx(Math.abs(getDx()));
+            setCenterX(circle.getRadius() + 1);
+        } else if (cBottom >= h && getDy() > 0) {
+            setDy(-Math.abs(getDy()));
+            setCenterY(h - circle.getRadius() - 1);
+        } else if (cTop <= 0 && getDy() < 0) {
+            setDy(Math.abs(getDy()));
+            setCenterY(circle.getRadius() + 1);
+
+        }
     }
 
     @Override
